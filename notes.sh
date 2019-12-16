@@ -53,11 +53,11 @@ while [ -n "$1" ]; do # while loop starts
 done
 
 if [ "$help" = true ] ; then
-    python3 notes.py "true false false none none none"
+    python3 $HOME/Personal/Projects/Note-Automation/notes.py "true false false none none none"
 elif [ "$list" = true ] ; then
-    python3 notes.py "false true false $category_name none none"
+    python3 $HOME/Personal/Projects/Note-Automation/notes.py "false true false $category_name none none"
 elif [ "$remove" = true ] ; then
-    python3 notes.py "false false true $category_name $file_name $file_extension"
+    python3 $HOME/Personal/Projects/Note-Automation/notes.py "false false true $category_name $file_name $file_extension"
 else
-    python3 notes.py "false false false $category_name $file_name $file_extension"
+    python3 $HOME/Personal/Projects/Note-Automation/notes.py "false false false $category_name $file_name $file_extension"
 fi
