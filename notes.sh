@@ -40,7 +40,7 @@ while [ -n "$1" ]; do # while loop starts
         list=true
         ;;
 
-    -h)
+    --help)
         help=true
         ;;
 
