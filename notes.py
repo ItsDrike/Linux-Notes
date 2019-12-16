@@ -1,18 +1,30 @@
 #!/bin/python3
+import configparser
 import os
 from getpass import getuser
 from shutil import rmtree
 from sys import argv
 
-NOTES_DIR = os.path.expanduser('~/Personal/Notes')
+
+parser = configparser.RawConfigParser()
+parser.read('notes.ini')
+
+
+NOTES_DIR = os.path.expanduser(parser.get('SETTINGS', 'NOTES_LOCATION'))
+
+for sect in parser.sections():
+    print('1')
+    print(sect)
 
 
 class Static(object):
     def __init__(self, show_help, listing, remove, category, filename, extension):
         self.Note = Note(category, filename, extension)
         if getuser() == 'root':
-            print('Warning, you are using root account for notes. This is not recommended')
-            print('Use "note -r" to remove all root\'s saved notes and use non-root account for notes.')
+            print(
+                'Warning, you are using root account for notes. This is not recommended')
+            print(
+                'Use "note -r" to remove all root\'s saved notes and use non-root account for notes.')
         if not len(self.Note.raw_category.split('/..') + self.Note.raw_category.split('../')) > 2:
             if show_help:
                 Static.show_help()
@@ -23,7 +35,8 @@ class Static(object):
             else:
                 self.open()
         else:
-            print(f'The category cannot point above parent directory ({self.Note.raw_category} -> {self.Note.full_raw_category_path})')
+            print(
+                f'The category cannot point above parent directory ({self.Note.raw_category} -> {self.Note.full_raw_category_path})')
 
     @staticmethod
     def show_help():
@@ -31,14 +44,16 @@ class Static(object):
         print(' -n [filename]         set the filename')
         print(' -c [category]         specify the category the note is in')
         print(' -e [extension]        specify the file extension of note ')
-        print(' -l                    for listing (can be  combined with -c for category specific')
+        print(
+            ' -l                    for listing (can be  combined with -c for category specific')
 
     def show_listing(self):
         if os.path.exists(self.Note.full_raw_category_path):
             os.system(f'ls --color=auto {self.Note.full_raw_category_path}')
         else:
             if not self.Note.raw_category == '':
-                print(f'No notes found under category: {self.Note.raw_category}')
+                print(
+                    f'No notes found under category: {self.Note.raw_category}')
             else:
                 print('No notes found')
 
@@ -95,9 +110,9 @@ class Static(object):
 
     @staticmethod
     def remove_all_notes():
-        #TODO: Change remove method
+        # TODO: Change remove method
         rmtree(NOTES_DIR)
-        #// os.system(f'rm -r {NOTES_DIR}')
+        # // os.system(f'rm -r {NOTES_DIR}')
         print('All notes has been removed')
 
     @staticmethod
@@ -133,14 +148,17 @@ class Note(Static):
             self.extension = 'txt'
 
         # Set some paths
-        self.relative_path = os.path.join(self.category, f'{self.filename}.{self.extension}')
+        self.relative_path = os.path.join(
+            self.category, f'{self.filename}.{self.extension}')
         self.full_path = os.path.join(NOTES_DIR, self.relative_path)
         self.full_category_path = os.path.join(NOTES_DIR, self.category)
-        self.full_raw_category_path = os.path.join(NOTES_DIR, self.raw_category)
+        self.full_raw_category_path = os.path.join(
+            NOTES_DIR, self.raw_category)
 
     def open(self):
         print(f'Opening {self.relative_path}')
-        os.system(f'gedit {self.full_path}')
+        editor = parser.get('SETTINGS', 'EDITOR')
+        os.system(f'{editor} {self.full_path}')
 
     def create(self):
         if not os.path.isdir(self.full_category_path):
@@ -159,31 +177,35 @@ class Note(Static):
 
     def remove_category(self):
         print(f'Removing category {self.category}')
-        #TODO: Change remove method
+        # TODO: Change remove method
         rmtree(self.full_category_path)
-        #// os.system(f'rm -r {self.full_category_path}')
+        # // os.system(f'rm -r {self.full_category_path}')
 
 
 if __name__ == '__main__':
-    params = argv[1].split(' ')
+    try:
+        params = argv[1].split(' ')
 
-    show_help = params[0]
-    if show_help == 'true':
-        show_help = True
-    else:
-        show_help = False
-    show_listing = params[1]
-    if show_listing == 'true':
-        show_listing = True
-    else:
-        show_listing = False
-    remove = params[2]
-    if remove == 'true':
-        remove = True
-    else:
-        remove = False
-    category = params[3]
-    filename = params[4]
-    extension = params[5]
+        show_help = params[0]
+        if show_help == 'true':
+            show_help = True
+        else:
+            show_help = False
+        show_listing = params[1]
+        if show_listing == 'true':
+            show_listing = True
+        else:
+            show_listing = False
+        remove = params[2]
+        if remove == 'true':
+            remove = True
+        else:
+            remove = False
+        category = params[3]
+        filename = params[4]
+        extension = params[5]
 
-    S = Static(show_help, show_listing, remove, category, filename, extension)
+        S = Static(show_help, show_listing, remove,
+                   category, filename, extension)
+    except IndexError:
+        print('File can\'t be run directly use notes.sh instead')
