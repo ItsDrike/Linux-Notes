@@ -18,14 +18,14 @@ It is designed to make it easier to take notes directly from terminal.
 Default editor for notes is *nano*, but it can be changed in notes.ini file
 
 1. Go to your installation directory of Linux-Notes/
-2. Navigate to *notes.ini* and change **EDITOR** value to whatever editor you use (use the terminal call for editor not just the name)
+2. Navigate to *notes.ini* and change `EDITOR` value to whatever editor you use (use the terminal call for editor not just the name)
 
 ## Save notes to other location
 
 Default notes location is *~/Personal/Notes*, but it can be changed in *notes.ini* file
 
 1. Go to your installation directory Linux-Notes/
-2. Navigate to *notes.ini* and change **NOTES_LOCATION** value to whatever location you want
+2. Navigate to *notes.ini* and change `NOTES_LOCATION` value to whatever location you want
 
 ## Usage
 
