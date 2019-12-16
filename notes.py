@@ -1,15 +1,18 @@
 #!/bin/python3
 import os
-from sys import argv
 from getpass import getuser
+from shutil import rmtree
+from sys import argv
 
 NOTES_DIR = os.path.expanduser('~/Personal/Notes')
 
 
 class Static(object):
-    #TODO: root check
     def __init__(self, show_help, listing, remove, category, filename, extension):
         self.Note = Note(category, filename, extension)
+        if getuser() == 'root':
+            print('Warning, you are using root account for notes. This is not recommended')
+            print('Use "note -r" to remove all root\'s saved notes and use non-root account for notes.')
         if not len(self.Note.raw_category.split('/..') + self.Note.raw_category.split('../')) > 2:
             if show_help:
                 Static.show_help()
@@ -93,7 +96,8 @@ class Static(object):
     @staticmethod
     def remove_all_notes():
         #TODO: Change remove method
-        os.system(f'rm -r {NOTES_DIR}')
+        rmtree(NOTES_DIR)
+        #// os.system(f'rm -r {NOTES_DIR}')
         print('All notes has been removed')
 
     @staticmethod
@@ -101,6 +105,7 @@ class Static(object):
         if not os.path.isdir(NOTES_DIR):
             print('Creating main notes directory')
             os.makedirs(NOTES_DIR)
+
 
 class Note(Static):
     def __init__(self, category, filename, extension):
@@ -155,7 +160,9 @@ class Note(Static):
     def remove_category(self):
         print(f'Removing category {self.category}')
         #TODO: Change remove method
-        os.system(f'rm -r {self.full_category_path}')
+        rmtree(self.full_category_path)
+        #// os.system(f'rm -r {self.full_category_path}')
+
 
 if __name__ == '__main__':
     params = argv[1].split(' ')
