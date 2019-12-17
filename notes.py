@@ -5,16 +5,19 @@ from getpass import getuser
 from shutil import rmtree
 from sys import argv
 
+# Get current file
+FILE = os.path.dirname(os.path.abspath(__file__))
 
+# Get settings from  notes.ini
 parser = configparser.RawConfigParser()
-parser.read('notes.ini')
+parser.read(os.path.join(FILE, 'notes.ini'))
 
+NOTES_DIR = parser.get('SETTINGS', 'NOTES_LOCATION').replace("'", '')
+# Replace ~ symbol to home directory
+if NOTES_DIR[0] == '~':
+    NOTES_DIR = os.path.expanduser(NOTES_DIR)
 
-NOTES_DIR = os.path.expanduser(parser.get('SETTINGS', 'NOTES_LOCATION'))
-
-for sect in parser.sections():
-    print('1')
-    print(sect)
+print(NOTES_DIR)
 
 
 class Static(object):
